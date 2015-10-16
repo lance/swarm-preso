@@ -1,0 +1,30 @@
+.reveal  section img.noborder {
+    border: none;
+    box-shadow: none;
+}
+
+.reveal h2 {
+    font-size: 2em;
+}
+
+.reveal h3 {
+    font-size: 1.6em;
+    text-transform: none;
+    text-shadow: .04em .04em #ddd;
+}
+
+.reveal ul {
+    list-style-type: none;
+}
+
+.reveal ul li {
+    font-size: 1.2em;
+    border-bottom: 1px solid #ddd;
+    padding: 1ex 0;
+}
+
+.reveal h3.filename {
+    text-decoration: underline;
+    font-style: italic;
+    color: #dd3333;
+}
