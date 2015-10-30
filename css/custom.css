@@ -9,8 +9,6 @@
 
 .reveal h3 {
     font-size: 1.6em;
-    text-transform: none;
-    text-shadow: .04em .04em #ddd;
 }
 
 .reveal ul {
@@ -26,5 +24,20 @@
 .reveal h3.filename {
     text-decoration: underline;
     font-style: italic;
-    color: #dd3333;
+    color: #707988;
+    text-transform:none;
+}
+
+.reveal pre code {
+    max-height:640px;
+}
+
+.reveal pre code.compressed {
+    font-size:85%;
+    line-height: 105%;
+}
+
+.reveal pre code.bigger {
+    font-size:120%;
+    line-height: 140%;
 }

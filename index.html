@@ -41,20 +41,39 @@
       <div class="slides">
         <section>
           <img src="images/swarm_logo.png" class="noborder">
-          <h3>Microservices in a Java EE World</h3>
-          <img class="noborder" src="images/projectodd-logo.png">
-          <p>
-            <small>Red Hat / JBoss / Project:Odd</small>
-          </p>
+          <h3>Microservices and Java EE</h3>
+          <img class="noborder" src="images/redhat-logo.jpg">
           <p>
             <small><a href="http://lanceball.com">Lance Ball</a> / <a href="http://twitter.com/lanceball">@lanceball</a></small>
           </p>
         </section>
 
         <section>
-          <img class="noborder" src="images/microservices_meme.png">
+          <img src="images/swarm_logo.png" class="noborder">
+          <p><img class="noborder" src="images/jboss-logo.png"></p>
+          <p><img class="noborder" src="images/projectodd-logo.png"></p>
         </section>
 
+        <section>
+          <h2>Microservices</h2>
+          <blockquote>
+            A software architecture
+            style in which complex applications are composed of small,
+            independent processes communicating with each other using
+            language-agnostic APIs. These services are small,
+            highly decoupled and focus on doing a small task,
+            facilitating a modular approach to system-building.
+            <footer>
+              <cite><a href="https://en.wikipedia.org/wiki/Microservices">Wikipedia - Microservices</a></cite>
+            </footer>
+          </blockquote>
+        </section>
+
+<!--
+        <section>
+          <img class="noborder" src="images/microservices_meme.png">
+        </section>
+-->
         <section>
           <h2>But Wait</h2>
           <h3>Isn't this just SOA?</h3>
@@ -81,51 +100,24 @@
         <section>
           <h2>Deployment</h2>
           <ul>
-            <li class="fragment">Single artifact deployment</li>
-            <li class="fragment">Independently / continuously deployable</li>
+            <li>Single artifact deployment</li>
+            <li>Independently / continuously deployable</li>
           </ul>
         </section>
         <section>
           <h2>Scalability</h2>
           <ul>
-            <li class="fragment">Independently scalable</li>
-            <li class="fragment">Small, focused teams</li>
-            <li class="fragment">Technology independence</li>
-
+            <li>Independently scalable</li>
+            <li>Small, focused teams</li>
+            <li>Technology independence</li>
           </ul>
         </section>
         <section>
           <h2>Configuration</h2>
           <ul>
-            <li class="fragment">Convention over configuration</li>
-            <li class="fragment">JEAS (Just Enough App Server)</li>
+            <li>Convention over configuration</li>
+            <li>JEAS (Just Enough App Server)</li>
           </ul>
-        </section>
-
-        <section>
-          <h2>Potential Hurdles</h2>
-          <ul>
-            <li class="fragment">Complexity inherent in a distributed system</li>
-            <li class="fragment">Potential operational complexity</li>
-            <li class="fragment">Transactions</li>
-            <li class="fragment">Tooling</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>So... Why?</h2>
-
-          <aside class="notes">
-            It must support a variety of different clients including
-            desktop browsers, mobile browsers and native mobile
-            applications. The application might also expose an API for
-            3rd parties to consume. It might also integrate with other
-            applications via either web services or a message
-            broker. The application handles requests (HTTP requests
-            and messages) by executing business logic; accessing a
-            database; exchanging messages with other systems; and
-            returning a HTML/JSON/XML response.
-          </aside>
         </section>
 
         <section>
@@ -140,15 +132,11 @@
 
         <section>
           <h2>OK, You Sold Me</h2>
-          <h3 class="fragment">But... How?</h3>
+          <h3>But... How?</h3>
         </section>
 
         <section>
           <h2>Terminology</h2>
-          <ul>
-            <li class="fragment">Uberjar</li>
-            <li class="fragment">Fraction</li>
-          </ul>
         </section>
 
         <section>
@@ -171,7 +159,163 @@ such as Netflix Ribbon.
         </section>
 
         <section>
-          <h2>A Simple App</h2>
+          <h2>Fractions</h2>
+          <h3>WildFly Subsystems</h3>
+          <ul class="fragment">
+            <li>Datasources</li>
+            <li>EJB</li>
+            <li>JAX-RS</li>
+            <li>Transactions</li>
+          </ul>
+          <ul class="fragment">
+            <li>Keycloak</li>
+            <li>Messaging</li>
+            <li>JPA</li>
+            <li>CDI</li>
+          </ul>
+          <ul class="fragment">
+            <li>Undertow</li>
+            <li>Clustering</li>
+            <li>Infinispan</li>
+            <li>Hawkular</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>JAX-RS Fraction</h2>
+          <h3 class="filename">pom.xml</h3>
+          <pre><code data-trim class="bigger">
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-jaxrs</artifactId>
+</dependency>
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>A Swarm App</h2>
+          <h3 class="filename">pom.xml</h3>
+          <pre><code data-trim class="bigger">
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <executions>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+          </code></pre>
+          </section>
+
+        <section>
+          <h2>Convert Java EE Application to Use WildFly Swarm</h2>
+        </section>
+        <section>
+          <img src="images/sample-app.png" class="noborder">
+        </section>
+
+        <section>
+          <h3 class="filename">pom.xml</h3>
+          <pre><code class="compressed" data-trim>
+
+<!-- include the JAX-RS with CDI+JAXB Fractions -->
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-jaxrs-weld</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm-jaxrs-jaxb</artifactId>
+</dependency>
+
+<!-- Make it a Swarm App -->
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <configuration>
+    <mainClass>org.wildfly.swarm.booker.pricing.Main</mainClass>
+    <properties>
+      <jboss.socket.binding.port-offset>3</jboss.socket.binding.port-offset>
+    </properties>
+  </configuration>
+  <executions>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>That's All</h2>
+        </section>
+
+        <section>
+          <h2>Building a Swarm App</h2>
+          <pre><code data-trim class="bigger">$ mvn package</code></pre>
+          <h3>Produces</h3>
+          <pre><code data-trim class="bigger">target/myApp-swarm.jar</code></pre>
+        </section>
+
+        <section>
+          <h2>Running a Swarm App</h2>
+          <pre><code data-trim class="bigger">$ java -jar myApp-swarm.jar</code></pre>
+          <h3>OR</h3>
+          <pre><code data-trim class="bigger">$ mvn wildfly-swarm:run</code></pre>
+        </section>
+
+        <section>
+          <h2>Fractions</h2>
+          <h3>Not Just Java EE</h3>
+        </section>
+
+        <section>
+          <h2>Keycloak</h2>
+          <ul>
+            <li>WildFly Overlay</li>
+            <li>SSO, OAuth, OpenID, JWT, SAML, etc.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Netflix OSS</h2>
+          <ul>
+            <li>Service Discovery</li>
+            <li>Client Side Load Balancing</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Keycloak Authentication</h2>
+          <h3 class="filename">PricingResource.java</h3>
+          <pre><code data-trim>
+@Path("/")
+public class PricingResource {
+
+  @GET
+  @Path("/book/{id}")
+  @Produces("application/json")
+  public Integer search(@PathParam("id") String id, @Context SecurityContext context) {
+    KeycloakPrincipal principal = (KeycloakPrincipal) context.getUserPrincipal();
+    if ( principal != null && principal.getKeycloakSecurityContext() != null ) {
+      return 9;
+    }
+    return 10;
+  }
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Netflix OSS</h2>
           <h3 class="filename">Main.java</h3>
           <pre><code data-trim>
 public class Main {
@@ -195,61 +339,78 @@ public class Main {
         </section>
 
         <section>
-          <h2>A Simple App</h2>
-          <h3 class="filename">PricingResource.java</h3>
-          <pre><code data-trim>
-@Path("/")
-public class PricingResource {
+          <h2>Convention Over Configuration</h2>
+          <ul>
+            <li>Reasonable defaults out of the box</li>
+            <li>Easily customized with a fluent API</li>
+          </ul>
+        </section>
 
-  @GET
-  @Path("/book/{id}")
-  @Produces("application/json")
-  public Integer search(@PathParam("id") String id, @Context SecurityContext context) {
-    KeycloakPrincipal principal = (KeycloakPrincipal) context.getUserPrincipal();
-    if ( principal != null && principal.getKeycloakSecurityContext() != null ) {
-      return 9;
-    }
-    return 10;
+
+        <section>
+          <h2>Custom Configuration</h2>
+          <pre><code class="compressed" data-trim>
+public class Main {
+
+  public static void main(String...args) {
+
+    CacheContainer webCache = new CacheContainer("web")
+        .defaultCache("dist")
+        .jgroupsTransport(new JGroupsTransport().lockTimeout(60000L))
+        .distributedCache("dist", distCache -> distCache
+            .mode("ASYNC")
+            .l1Lifespan(0L)
+            .owners(2)
+            .lockingComponent(new LockingComponent().isolation("REPEATABLE_READ"))
+            .transactionComponent(new TransactionComponent().mode("BATCH"))
+            .fileStore(new FileStore()));
+
+    InfinispanFraction fraction = new InfinispanFraction();
+    fraction.cacheContainer( webCache );
+
+    Container container = new Container();
+    container.fraction( fraction );
+
+    // Start the container
+    container.start();
   }
 }
-          </code></pre>
+</code></pre>
+
+</section>
+
+<!--
+<section>
+  <h2>Potential Hurdles</h2>
+</section>
+
+        <section>
+          <h2>Transactions</h2>
+          <img src="images/transactions.jpg">
+        </section>
+-->
+        <section>
+          <h2>Potential Hurdles</h2>
+          <ul>
+            <li>Complexity inherent in a distributed system</li>
+            <li>Potential operational complexity</li>
+            <li>Tooling</li>
+          </ul>
         </section>
 
         <section>
-          <h2>A Simple App</h2>
-          <h3 class="filename">pom.xml</h3>
-          <pre><code data-trim>
-<dependency>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-jaxrs</artifactId>
-</dependency>
-          </code></pre>
+          <h2>Community</h2>
+          <ul>
+            <li>https://github.com/wildfly-swarm</li>
+            <li>@wildflyswarm</li>
+            <li>#wildfly-swarm</li>
+          </ul>
         </section>
 
         <section>
-          <h2>A Simple App</h2>
-          <h3 class="filename">pom.xml</h3>
-          <pre style="font-size:large"><code data-trim>
-<plugin>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-plugin</artifactId>
-  <configuration>
-    <mainClass>org.wildfly.swarm.booker.pricing.Main</mainClass>
-    <properties>
-      <jboss.socket.binding.port-offset>3</jboss.socket.binding.port-offset>
-    </properties>
-  </configuration>
-  <executions>
-    <execution>
-      <goals>
-        <goal>package</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
-
-          </code></pre>
+          <h2>Thanks &amp; Questions</h2>
         </section>
+
 
       </div>
 
