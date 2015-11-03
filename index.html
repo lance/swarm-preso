@@ -92,9 +92,9 @@
         <section>
           <h2>Key Distinctions</h2>
           <ul>
-            <li class="fragment">Deployment</li>
-            <li class="fragment">Scalability</li>
-            <li class="fragment">Configuration</li>
+            <li>Deployment</li>
+            <li>Scalability</li>
+            <li>Configuration</li>
           </ul>
         </section>
         <section>
@@ -121,12 +121,12 @@
         </section>
 
         <section>
-          <h2>Typical WildFly SOA Deployment</h2>
+          <h2>Typical WildFly Deployment</h2>
           <img class="noborder" src="images/boxes1.png" title="Typical SOA Deployment">
         </section>
 
         <section>
-          <h2>Typical WildFly SOA Deployment</h2>
+          <h2>Typical WildFly Deployment</h2>
           <img class="noborder" src="images/boxes2.png" title="Typical SOA Deployment">
         </section>
 
@@ -159,6 +159,15 @@ such as Netflix Ribbon.
         </section>
 
         <section>
+          <h2>What Fractions Can Do</h2>
+          <ul>
+            <li>Enable WildFly subsystems (JAX-RS, Infinispan)</li>
+            <li>Provide deployments (ribbon-webapp, jolokia)</li>
+            <li>Alter deployments (keycloak)</li>
+          </ul>
+        </section>
+
+        <section>
           <h2>Fractions</h2>
           <h3>WildFly Subsystems</h3>
           <ul class="fragment">
@@ -188,6 +197,7 @@ such as Netflix Ribbon.
 <dependency>
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-jaxrs</artifactId>
+  <version>${swarm.version}</version>
 </dependency>
           </code></pre>
         </section>
@@ -225,23 +235,20 @@ such as Netflix Ribbon.
 <dependency>
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-jaxrs-weld</artifactId>
+  <version>${version.swarm}</version>
 </dependency>
 
 <dependency>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm-jaxrs-jaxb</artifactId>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-jaxrs-jaxb</artifactId>
+  <version>${version.swarm}</version>
 </dependency>
 
 <!-- Make it a Swarm App -->
 <plugin>
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-plugin</artifactId>
-  <configuration>
-    <mainClass>org.wildfly.swarm.booker.pricing.Main</mainClass>
-    <properties>
-      <jboss.socket.binding.port-offset>3</jboss.socket.binding.port-offset>
-    </properties>
-  </configuration>
+  <version>${version.swarm}</version>
   <executions>
     <execution>
       <goals>
@@ -256,6 +263,9 @@ such as Netflix Ribbon.
 
         <section>
           <h2>That's All</h2>
+          <aside class="notes">
+            Show local repo diff and run it here.
+          </aside>
         </section>
 
         <section>
@@ -286,14 +296,6 @@ such as Netflix Ribbon.
         </section>
 
         <section>
-          <h2>Netflix OSS</h2>
-          <ul>
-            <li>Service Discovery</li>
-            <li>Client Side Load Balancing</li>
-          </ul>
-        </section>
-
-        <section>
           <h2>Keycloak Authentication</h2>
           <h3 class="filename">PricingResource.java</h3>
           <pre><code data-trim>
@@ -312,6 +314,14 @@ public class PricingResource {
   }
 }
           </code></pre>
+        </section>
+
+        <section>
+          <h2>Netflix OSS</h2>
+          <ul>
+            <li>Service Discovery</li>
+            <li>Client Side Load Balancing</li>
+          </ul>
         </section>
 
         <section>
@@ -395,6 +405,73 @@ public class Main {
             <li>Complexity inherent in a distributed system</li>
             <li>Potential operational complexity</li>
             <li>Tooling</li>
+          </ul>
+        </section>
+
+        <section>
+          <img src="images/transactions.jpg"/>
+        </section>
+
+        <section>
+          <h2>Transactions</h2>
+          <pre><code data-trim>
+public class Main {
+  public static void main(String[] args) throws Exception {
+    Container container = new Container();
+
+    container.subsystem(new TransactionsFraction(4712, 4713));
+    container.start();
+
+    JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+
+    deployment.addResource(MyResource.class);
+
+    container.deploy(deployment);
+  }
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Transactions</h2>
+          <pre><code class="compressed" data-trim>
+@Path("/")
+public class MyResource {
+
+  @Path("begincommit")
+  @GET
+  @Produces("text/plain")
+  public String beginCommit() throws Exception {
+
+    UserTransaction txn = (UserTransaction) new InitialContext()
+        .lookup("java:comp/UserTransaction");
+    String value = "Transaction ";
+
+    try {
+      txn.begin();
+
+      value += "begun ok";
+
+      try {
+        txn.commit();
+
+        value += " and committed ok";
+      } catch (final Throwable ex) {
+        value += " but failed to commit";
+    }
+  }
+}
+          </code></pre>
+          </section>
+
+
+        <section>
+          <h2>The Future</h2>
+          <ul>
+            <li>Formal release</li>
+            <li>More WildFly subsystems</li>
+            <li>Improved integration tests</li>
+            <li>Community feedback</li>
           </ul>
         </section>
 
