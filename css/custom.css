@@ -41,3 +41,8 @@
     font-size:120%;
     line-height: 140%;
 }
+
+span.bold {
+    font-weight: bold;
+    display: block;
+}
